@@ -35,7 +35,14 @@
     .topnav a:hover { color: var(--ink); }
     .hero { position: relative; overflow: hidden; min-height: 530px; display: grid; align-items: center; padding: 76px 0 68px; }
     .hero::before { content: ""; position: absolute; width: 515px; height: 515px; right: 1%; top: 8px; border-radius: 50%; background: radial-gradient(circle at 34% 31%, #fff 0 12%, #ffcd48 13% 22%, #ff674f 23% 34%, #9167f2 35% 46%, #67c58c 47% 58%, #e9e1fa 59% 67%, transparent 68%); opacity: .83; filter: blur(1px); }
-    .hero::after { content: ""; position: absolute; z-index: 0; right: 40%; bottom: 26px; width: 16px; height: 16px; border-radius: 50%; background: var(--green); box-shadow: 28px -16px 0 var(--gold), 58px 5px 0 var(--red), 86px -10px 0 var(--purple); }
+    .hero-palette { position: absolute; z-index: 1; right: 37%; bottom: 26px; display: flex; align-items: center; gap: 12px; }
+    .hero-palette i { display: block; width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 2px 8px rgba(23,24,22,.14); }
+    .hero-palette i:nth-child(1) { background: #001248; transform: translateY(-6px); }
+    .hero-palette i:nth-child(2) { background: #78b042; transform: translateY(4px); }
+    .hero-palette i:nth-child(3) { background: #b21323; transform: translateY(-10px); }
+    .hero-palette i:nth-child(4) { background: #fff; border: 1px solid rgba(23,24,22,.2); transform: translateY(6px); }
+    .hero-palette i:nth-child(5) { background: #080c33; transform: translateY(-5px); }
+    .hero-palette i:nth-child(6) { background: #1c1d1b; transform: translateY(3px); }
     .hero-inner { position: relative; z-index: 1; max-width: 780px; }
     .eyebrow { display: inline-flex; align-items: center; gap: 10px; color: #565851; text-transform: uppercase; letter-spacing: .15em; font-size: .68rem; font-weight: 750; }
     .eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--ink); }
@@ -148,6 +155,9 @@
       .brand-mark { flex-basis: 126px; width: 126px; height: 35px; }
       .brand-mark img { top: -33px; left: -11px; width: 150px; }
       .hero-note { position: relative; right: auto; bottom: auto; width: 160px; margin: 22px 0 0 auto; padding: 12px; transform: none; }
+      .hero-note { margin-bottom: 34px; }
+      .hero-palette { right: 22%; bottom: 10px; gap: 9px; }
+      .hero-palette i { width: 13px; height: 13px; }
       .section-head { align-items: flex-start; flex-direction: column; gap: 10px; }
       .section-aside { max-width: 330px; }
       .event { grid-template-columns: 1fr; grid-template-rows: 270px auto; }
@@ -183,6 +193,7 @@
         <div class="hero-actions"><a class="button" href="#formate">Unsere Formate <span aria-hidden="true">↓</span></a><a class="quiet-link" href="#arena">ARENA entdecken <span aria-hidden="true">↗</span></a></div>
       </div>
       <aside class="hero-note" aria-label="Sechs Formate, eine Stadt"><b>Ein Platz für viele Ideen.</b><small>Viele verschiedene Formate, eine Stadt – und jede Menge gemeinsame Momente.</small><span class="note-dots"><i></i><i></i><i></i></span></aside>
+      <span class="hero-palette" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
     </section>
 
     <section id="formate" class="wrap" aria-labelledby="formate-title">
