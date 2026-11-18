@@ -49,8 +49,9 @@
     .topnav a:hover { color: var(--ink); }
     .hero { position: relative; overflow: hidden; min-height: 530px; display: grid; align-items: center; padding: 76px 0 68px; }
     .hero-photo { position: absolute; z-index: 0; top: 8px; right: 1%; width: min(46vw, 515px); aspect-ratio: 1; border-radius: 50%; object-fit: cover; object-position: center 57%; box-shadow: 0 18px 55px rgba(19, 27, 45, .16); }
-    .hero-palette { position: absolute; z-index: 1; right: 37%; bottom: 0; display: flex; align-items: center; gap: 12px; }
-    .hero-palette i { display: block; width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 2px 8px rgba(23,24,22,.14); }
+    .hero-palette { position: absolute; z-index: 1; left: 0; bottom: 0; display: flex; align-items: center; gap: 12px; }
+    .hero-palette i { display: block; flex: 0 0 16px; width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 2px 8px rgba(23,24,22,.14); }
+    .hero-orange-dot { display: inline-block; width: 16px; height: 16px; margin-left: .04em; border-radius: 50%; background: #db9b18; vertical-align: baseline; }
     .hero-palette i:nth-child(1) { background: #001248; }
     .hero-palette i:nth-child(2) { background: #78b042; }
     .hero-palette i:nth-child(3) { background: #b21323; }
@@ -170,8 +171,9 @@
       .hero-note { float: none; width: min(100%, 390px); margin: 22px 0 18px auto; padding: 20px 21px; }
       .hero-note b { font-size: 1.05rem; }
       .hero-note p { font-size: .85rem; }
-      .hero-palette { right: 22%; bottom: 0; gap: 9px; }
-      .hero-palette i { width: 13px; height: 13px; }
+      .hero-palette { bottom: 0; gap: 9px; }
+      .hero-palette i { flex-basis: 13px; width: 13px; height: 13px; }
+      .hero-orange-dot { width: 13px; height: 13px; }
       .section-head { align-items: flex-start; flex-direction: column; gap: 10px; }
       .event { grid-template-columns: 1fr; grid-template-rows: 270px auto; }
       .event-copy { min-height: 280px; padding: 22px; }
@@ -204,7 +206,7 @@
       <img class="hero-photo" src="assets/public-viewing-hero.jpg" alt="" aria-hidden="true" fetchpriority="high">
       <div class="hero-inner">
         <span class="eyebrow">Agentur für Live-Kommunikation</span>
-        <h1 id="hero-title">Wir machen die Stadt <span>bunt &amp; lebendig.</span></h1>
+        <h1 id="hero-title">Wir machen die Stadt <span>bunt &amp; lebendig</span><span class="hero-orange-dot" aria-hidden="true"></span></h1>
         <aside class="hero-note"><b>Wir bringen Menschen zusammen.</b><p>Mit Veranstaltungen, die Recklinghausen begeistern.</p></aside>
         <p class="hero-copy">Wenn die Altstadt leuchtet, der Rathausplatz mitfiebert oder das Publikum beim HURZ Tränen lacht, stecken wir dahinter. Mit Ideen, die zu Erlebnissen werden: Mitten in Recklinghausen, gemeinsam mit starken Partnern und mit viel Gespür für unsere Stadt.</p>
         <div class="hero-actions"><a class="button" href="#formate">Unsere Formate <span aria-hidden="true">↓</span></a><a class="quiet-link" href="#macher">ARENA entdecken <span aria-hidden="true">↗</span></a></div>
@@ -294,14 +296,29 @@
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const hero = document.querySelector('.hero');
       const palette = document.querySelector('.hero-palette');
-      if (hero && palette && !reducedMotion) {
+      if (hero && palette) {
         const points = [...palette.children];
         let scrollFrame = 0;
         const movePoints = () => {
           scrollFrame = 0;
           const progress = Math.min(1, Math.max(0, window.scrollY / Math.max(hero.offsetHeight, window.innerHeight)));
-          const fallDistance = hero.clientHeight * .48;
+          const orangeDot = hero.querySelector('.hero-orange-dot');
+          if (orangeDot) {
+            const dot = orangeDot.getBoundingClientRect();
+            const heroRect = hero.getBoundingClientRect();
+            const paletteWidth = palette.offsetWidth;
+            const gap = 8;
+            const afterDot = dot.right - heroRect.left + gap;
+            const left = afterDot + paletteWidth <= hero.clientWidth ? afterDot : Math.max(0, dot.left - heroRect.left - paletteWidth - gap);
+            palette.style.left = `${left}px`;
+            palette.dataset.fallDistance = `${Math.max(0, hero.clientHeight - palette.offsetHeight - (dot.top + dot.height / 2 - heroRect.top - palette.offsetHeight / 2))}`;
+          }
+          const fallDistance = Number(palette.dataset.fallDistance) || hero.clientHeight * .48;
           points.forEach((point, index) => {
+            if (reducedMotion) {
+              point.style.transform = '';
+              return;
+            }
             const delay = index * .035;
             const travel = Math.min(1, Math.max(0, (progress - delay) / (1 - delay)));
             const drop = Math.min(1, travel / .76);
@@ -313,9 +330,10 @@
             point.style.transform = `translate3d(0, ${y + hop}px, 0) scaleY(${squash})`;
           });
         };
-        window.addEventListener('scroll', () => {
+        if (!reducedMotion) window.addEventListener('scroll', () => {
           if (!scrollFrame) scrollFrame = window.requestAnimationFrame(movePoints);
         }, { passive: true });
+        window.addEventListener('resize', movePoints, { passive: true });
         movePoints();
       }
       document.querySelectorAll('.slider').forEach((slider) => {
